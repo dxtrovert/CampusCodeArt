@@ -22,7 +22,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: auto; }
-body { margin: 0; min-width: 320px; background: var(--color-bg); }
+body { margin: 0; min-width: 320px; background-color: var(--color-bg); background-image: linear-gradient(#1111110a 1px, transparent 1px), linear-gradient(90deg, #1111110a 1px, transparent 1px); background-size: 32px 32px; }
 body, button, input { font-family: 'Inter', sans-serif; }
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; text-decoration: none; }
@@ -34,6 +34,7 @@ img { display: block; max-width: 100%; }
 .brand-mark { width: 43px; height: 34px; object-fit: contain; }
 .landing-page { padding: 14px var(--page-gutter) 22px; }
 .section-shell { position: relative; overflow: hidden; max-width: 1440px; margin: 0 auto 14px; padding: clamp(28px, 4vw, 58px); border: 1px solid var(--color-border); border-radius: 27px; background: var(--color-bg); }
+.section-shell:not(.theme-dark) { background-image: none; }
 .theme-dark { color: #fff; background: #111; border-color: #363636; }
 .theme-dark .section-label__line { background: #686868; }
 .theme-dark .section-label { color: #dbdbd8; }
@@ -497,3 +498,44 @@ h1, h2, h3, p { margin-top: 0; }
 .process-grid { position: relative; }
 .process-grid::before { content: ''; position: absolute; left: 5%; right: 5%; top: 50%; height: 1px; background: var(--color-purple); opacity: .35; }
 .final-cta .button { box-shadow: 0 0 0 5px #7665ff33; }
+
+/* Share the section's eased expansion progress, including scrub catch-up and reversal. */
+.site-header { color: color-mix(in srgb, #fff var(--header-darkness, 0%), #111); background: color-mix(in srgb, #111 var(--header-darkness, 0%), #f7f7f4); border-color: color-mix(in srgb, #777 var(--header-darkness, 0%), #191919); }
+.site-header .header-cta { color: color-mix(in srgb, #111 var(--header-darkness, 0%), #fff); background: color-mix(in srgb, #fff var(--header-darkness, 0%), #111); }
+@media (min-width: 901px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  .site-header { transition: none; }
+  .site-header .header-cta { transition: transform .2s; }
+}
+/* A full-width surface is revealed by the scroll mask without scaling its cards.
+   Outside animated desktop scenes, keep the original rounded section layout. */
+@media (min-width: 901px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  .landing-page .section-shell.theme-dark { width: var(--viewport-width, 100%); max-width: none; min-height: calc(100svh - var(--header-bottom, 80px)); margin-left: calc((100% - var(--viewport-width, 100%)) / 2); border-radius: 0; border-color: var(--color-black); clip-path: inset(12px 4% round 27px); }
+  /* Reveal the section's own surface behind the floating navbar, without moving content. */
+  .landing-page .section-shell.theme-dark { overflow: visible; isolation: isolate; }
+  .landing-page .section-shell.theme-dark::before { content: ''; position: absolute; inset: calc(-1 * var(--header-bottom, 80px) - 1px) -1px -1px; z-index: -1; background: var(--color-black); pointer-events: none; }
+  .landing-page .section-shell:not(.theme-dark):not(.hero-section) { overflow: visible; isolation: isolate; }
+  .landing-page .section-shell:not(.theme-dark):not(.hero-section)::before { content: ''; position: absolute; inset: calc(-1 * var(--header-bottom, 80px) - 1px) -1px -1px; z-index: -1; background: var(--color-bg); pointer-events: none; }
+  .landing-page .section-shell:not(.theme-dark):not(.hero-section) { border-color: transparent; box-shadow: none; }
+  /* Draw inside the animated mask: a normal border is outside its inset edges. */
+  .landing-page .section-shell:not(.theme-dark):not(.hero-section)::after {
+    content: '';
+    position: absolute;
+    top: calc(12px * (1 - var(--section-expansion, 0)) - var(--header-bottom, 80px) * var(--section-expansion, 0) + 1px);
+    right: calc(4% * (1 - var(--section-expansion, 0)) + 1px);
+    bottom: calc(12px * (1 - var(--section-expansion, 0)) + 1px);
+    left: calc(4% * (1 - var(--section-expansion, 0)) + 1px);
+    border: 1.5px solid #aeada5;
+    border-radius: calc(26px * (1 - var(--section-expansion, 0)));
+    z-index: 5;
+    pointer-events: none;
+  }
+  .landing-page .about-section { padding: 40px clamp(32px, 4vw, 58px) 38px; }
+  .landing-page .about-heading { min-height: clamp(250px, 34vh, 330px); padding: 30px 2% 24px; }
+  .landing-page .about-steps { gap: clamp(12px, 1vw, 18px); }
+}
+
+/* CampusCode pointer, including the clickable state, at half the original display size. */
+@media (pointer: fine) {
+  html, body, body * { cursor: url('/images/cursor.png') 1 0, auto !important; }
+  a, button, [role='button'], [role='link'], input[type='button'], input[type='submit'], select, label, summary, [onclick], [tabindex]:not([tabindex='-1']) { cursor: url('/images/cursor.png') 1 0, auto !important; }
+}

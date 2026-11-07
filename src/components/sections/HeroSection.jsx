@@ -43,7 +43,7 @@ export default function HeroSection() {
     const carousel = carouselRef.current;
     if (!carousel) return;
 
-    const target = (index + heroItems.length) % heroItems.length;
+    const target = Math.max(0, Math.min(heroItems.length - 1, index));
     const difference = target - scrollTargetRef.current;
     const key = difference < 0 ? 'ArrowLeft' : 'ArrowRight';
     for (let step = 0; step < Math.abs(difference); step += 1) {
@@ -83,19 +83,29 @@ export default function HeroSection() {
     if (!hero || reduceMotion) return undefined;
 
     const context = gsap.context(() => {
+      let previousProgress = 0;
       ScrollTrigger.create({
         trigger: hero,
         pin: true,
         pinSpacing: true,
         start: 'top top+=92',
-        end: () => `+=${Math.round(window.innerHeight * (heroItems.length - 1) * 0.46)}`,
+        end: () => `+=${Math.round(window.innerHeight * (heroItems.length - 1) * 0.23)}`,
         scrub: 0.35,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const target = Math.round(self.progress * (heroItems.length - 1));
-          if (target !== scrollTargetRef.current) moveCarouselTo(target);
+          if (target !== scrollTargetRef.current) {
+            moveCarouselTo(target);
+            previousProgress = self.progress;
+          } else if ((self.direction < 0 || self.progress < previousProgress) && self.progress === 0 && scrollTargetRef.current !== 0) {
+            moveCarouselTo(0);
+            previousProgress = self.progress;
+          } else {
+            previousProgress = self.progress;
+          }
         },
+        onLeaveBack: () => moveCarouselTo(0),
       });
     }, hero);
 
@@ -140,9 +150,6 @@ export default function HeroSection() {
         <div className="hero-visual" ref={visualRef}>
           <span className="hero-spark hero-spark--top" aria-hidden="true">+</span>
           <span className="hero-spark hero-spark--side" aria-hidden="true">+</span>
-          <div className="hero-visual__caption">
-            <span className="mono-label">CAMPUSCODE / 01</span>
-          </div>
           <FlexCarousel
             containerRef={carouselRef}
             className="hero-carousel"

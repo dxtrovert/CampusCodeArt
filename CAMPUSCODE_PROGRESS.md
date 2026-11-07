@@ -63,3 +63,38 @@
 - Changed the desktop hero headline to Montserrat Black, reduced its desktop size by 10%, and loosened its tracking by 10%; adjusted the Discover panel's vertical rhythm to separate its supporting description from the centered builder count.
 - Rebalanced the large-desktop hero columns so the heavier headline stays within its column, and tightened Discover title spacing so its builder count no longer overlaps the supporting copy.
 - Verified the Montserrat Black headline and panel spacing at 1920x1080 and 1366x768: the heading fits its column, Discover copy clears the builder count, stats remain visible, carousel controls stay removed, and neither viewport has horizontal overflow.
+
+## 2026-11-08 — Dark section and header continuity
+
+- Modified `src/components/layout/SiteHeader.jsx`, `src/hooks/useScrollTrigger.js`, and `src/styles/index.css`.
+- Dark landing sections now span the viewport width with square outer edges and a minimum height equal to the viewport minus the measured sticky-header bottom. Taller content remains naturally sized.
+- Added a fixed background behind the header so its surrounding space follows the active section theme. Theme detection uses section geometry beneath the header and works in either scroll direction.
+- Section pin starts use the measured header bottom. Dark sections no longer clip their outer edges; existing content animation timing, light-section expansion, Lenis integration, and hero implementation remain unchanged.
+- Validation: production build and diff whitespace checks passed. Browser checks at 1280x720 confirmed a dark section meets the header, spans the available width without horizontal overflow, and returns the header to light on upward scrolling. No browser errors or warnings were captured.
+- Existing production asset paths and hero carousel behavior were outside this change. No dependencies were added.
+
+### Follow-up — Restore boxed dark-section entry and exit
+
+- Dark sections now animate from an inset rounded shape to edge-to-edge beneath the header, then back to the inset shape before releasing. The same timeline reverses on upward scrolling.
+- Removed the global dark body background so the boxed section gutters remain visible. Retained the themed navbar surround.
+- Increased scrub smoothing to one second and used equal 1.2-unit expansion/contraction phases with sine easing. Cards are not scaled; their existing content animations remain intact.
+- Full-width dark surfaces are restricted to the existing desktop animation media query; mobile and reduced-motion layouts retain their original rounded sections.
+- Browser verification confirmed Arena's mask progressing from rounded/inset to zero inset, back to rounded/inset, and back to zero inset when scrolling upward. No console errors were captured. Hero code is unchanged.
+
+### Follow-up — Synchronize header with dark-section expansion
+
+- Updated `SiteHeader.jsx`, `useScrollTrigger.js`, and `index.css` so the header colors and surrounding background use the same eased expansion value as each dark section.
+- Removed the 16px early activation threshold. The header begins changing at the measured header boundary, tracks scrub catch-up even after scrolling stops, and returns to light during contraction in either direction.
+- Disabled competing CSS color transitions for animated desktop scenes; the existing GSAP smoothing now controls both surfaces together. Mobile and reduced-motion layouts retain geometry-based theme selection.
+- Browser checks on Arena confirmed matching section/header progress at partial expansion (15.2%), full expansion (100%), contraction (0%), and reverse expansion (100%), with no console errors. Production build passed.
+
+### Follow-up — Limit the header animation to the navbar rectangle
+
+- Removed the fixed full-width header surround and its CSS. Only the rounded navbar, its text, border, and button now change theme with dark-section expansion.
+- Preserved the existing synchronized scroll animation, section pin positions, and reverse behavior. The area outside the navbar now shows the underlying page instead of an animated background strip.
+
+### Follow-up — Expand dark section surfaces behind the floating navbar
+
+- Extended each animated dark section's own background upward by the measured header offset using a non-interactive pseudo-element. The expansion mask reveals this surface behind the navbar and retracts it with the existing timeline.
+- Kept section content positions, header stacking, theme synchronization, and pin spacing intact. Used explicit four-sided mask values for consistent GSAP interpolation.
+- Browser verification confirmed the expanded Arena background reaches the viewport top behind the visible navbar. Mobile and reduced-motion layouts remain unchanged.

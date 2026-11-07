@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import BrandMark from '../common/BrandMark.jsx';
@@ -11,6 +11,7 @@ const navigation = [
 ];
 
 export default function SiteHeader() {
+  const headerRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [darkHeader, setDarkHeader] = useState(false);
   const location = useLocation();
@@ -25,36 +26,50 @@ export default function SiteHeader() {
       return undefined;
     }
 
-    const sectionObserver = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) setDarkHeader(visible.target.dataset.theme === 'dark');
-      },
-      { rootMargin: '-15% 0px -65% 0px', threshold: [0, 0.2, 0.5] },
-    );
-
-    const observeSections = () => {
-      document.querySelectorAll('[data-theme]').forEach((section) => {
-        if (section.dataset.headerThemeObserved) return;
-        section.dataset.headerThemeObserved = 'true';
-        sectionObserver.observe(section);
-      });
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const header = headerRef.current;
+      if (!header) return;
+      const bottom = header.offsetHeight + (parseFloat(getComputedStyle(header).top) || 0);
+      document.documentElement.style.setProperty('--header-bottom', `${bottom}px`);
+      document.documentElement.style.setProperty('--viewport-width', `${document.documentElement.clientWidth}px`);
+      const sections = [...document.querySelectorAll('section[data-theme]')];
+      const active = sections.filter((section) => {
+        const rect = section.getBoundingClientRect();
+        return rect.top <= bottom + 1 && rect.bottom > bottom + 1;
+      }).pop();
+      const dark = active?.dataset.theme === 'dark';
+      const expansion = active ? getComputedStyle(active).getPropertyValue('--section-expansion').trim() : '';
+      const progress = expansion === '' ? 1 : Number(expansion);
+      // Light scenes keep the header light throughout expansion; dark scenes
+      // blend it only in proportion to the same scrubbed progress as the mask.
+      const darkness = dark ? progress : 0;
+      document.documentElement.style.setProperty('--header-darkness', `${darkness * 100}%`);
+      setDarkHeader(dark);
+      document.documentElement.dataset.sectionTheme = dark ? 'dark' : 'light';
     };
-
-    observeSections();
-    const mutationObserver = new MutationObserver(observeSections);
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    window.addEventListener('campuscode:section-expansion', schedule);
+    const mutationObserver = new MutationObserver(schedule);
     mutationObserver.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       mutationObserver.disconnect();
-      sectionObserver.disconnect();
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      window.removeEventListener('campuscode:section-expansion', schedule);
+      cancelAnimationFrame(frame);
+      delete document.documentElement.dataset.sectionTheme;
+      document.documentElement.style.removeProperty('--header-darkness');
     };
   }, [location.pathname]);
 
   return (
-    <header className={`site-header ${darkHeader ? 'site-header--dark' : ''}`}>
+    <header ref={headerRef} className={`site-header ${darkHeader ? 'site-header--dark' : ''}`}>
       <div className="site-header__inner">
         <Link className="wordmark" to="/" aria-label="CampusCode home">
           <BrandMark />
