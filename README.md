@@ -60,10 +60,6 @@ CampusCodeArt/
 └── package.json
 ```
 
-## Screenshots
-
-**TODO:** Add verified screenshots of the running landing page, dashboard, events and auth pages, plus an optional short animation demo. The images in `ui/` are design references, not application screenshots.
-
 ## Getting Started
 
 **Prerequisites:** Node.js 20 or newer, npm and a modern browser with WebGL support.
