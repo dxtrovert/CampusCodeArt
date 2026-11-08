@@ -11,7 +11,8 @@ export default function useScrollTrigger(containerRef) {
     const media = gsap.matchMedia(container);
     media.add('(min-width: 901px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)', () => {
       container.querySelectorAll('.landing-page > section:not(.hero-section)').forEach((scene) => {
-        const content = scene.querySelectorAll('.section-label, h2, .section-lede, .about-emblem, .about-step, .build-card__content, .process-card, .challenge-card, .people-visual img, .final-cta__rule, .final-cta .button');
+        const content = scene.querySelectorAll('.section-label, h2, .section-lede, .about-emblem, .build-card__content, .challenge-card, .people-visual img, .final-cta__rule, .final-cta .button');
+        const flipCards = scene.querySelectorAll('.campus-flip');
         const timeline = gsap.timeline({ scrollTrigger: {
           trigger: scene, start: () => `top top+=${parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-bottom')) || 92}`, end: '+=120%', pin: true,
           pinSpacing: true, scrub: 1, invalidateOnRefresh: true,
@@ -23,6 +24,7 @@ export default function useScrollTrigger(containerRef) {
         const expandedClip = () => `inset(-${parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-bottom')) || 80}px 0% 0px 0% round 0px)`;
         timeline.fromTo(scene, { clipPath: boxedClip, '--section-expansion': 0 }, { clipPath: expandedClip, '--section-expansion': 1, duration: 1.2, ease: 'sine.inOut' });
         timeline.fromTo(content, { opacity: 0.25, y: 32 }, { opacity: 1, y: 0, stagger: 0.12, duration: 0.8, ease: 'power2.out' }, 0.25);
+        if (flipCards.length) timeline.fromTo(flipCards, { opacity: 0.25 }, { opacity: 1, stagger: 0.12, duration: 0.8, ease: 'power2.out' }, 0.25);
         timeline.to({}, { duration: 0.6 });
         timeline.to(scene, { clipPath: boxedClip, '--section-expansion': 0, duration: 1.2, ease: 'sine.inOut' });
         timeline.eventCallback('onUpdate', () => window.dispatchEvent(new Event('campuscode:section-expansion')));

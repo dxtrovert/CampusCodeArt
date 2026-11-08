@@ -98,3 +98,31 @@
 - Extended each animated dark section's own background upward by the measured header offset using a non-interactive pseudo-element. The expansion mask reveals this surface behind the navbar and retracts it with the existing timeline.
 - Kept section content positions, header stacking, theme synchronization, and pin spacing intact. Used explicit four-sided mask values for consistent GSAP interpolation.
 - Browser verification confirmed the expanded Arena background reaches the viewport top behind the visible navbar. Mobile and reduced-motion layouts remain unchanged.
+
+### About cards — Reference-inspired visual styling
+
+- Updated AboutSection.jsx and index.css: aligned icon/arrow rows, bolder card titles, consistent padding and rounded borders, and subtle white/lavender/lime surfaces.
+- Replaced the numeric corner labels with decorative diagonal arrows, preserving the existing descriptions and article semantics.
+- Added horizontal breathing room around the card row to keep its edges within the section's inset boundary. Existing scroll, reveal, and hover animations were not changed.
+- Production build passed. Browser visual review was unavailable because the prior browser session had expired.
+
+### Flip cards — About and Process
+
+- Installed React Bits FlipCard and its `motion` dependency. The four About and four Process cards now flip to reveal the supplied descriptions and bullets.
+- Process card actions point to the existing Arena section or registration; project submission and teammate matching are not yet implemented.
+- Preserved the existing scroll triggers, disabled card tilt and drag to avoid competing with scroll behavior, and kept reduced-motion handling provided by FlipCard. Production build passed.
+
+### Dashboard and My Events
+
+- Added a shared responsive dashboard sidebar and `/events` route. Rebuilt the dashboard overview with a featured event, four statistics, related events, and the existing activity chart and sign-out action.
+- Added three sample event cards with local search, filters, expandable details, and device-local registration state. Hosting and team filters currently show no results because there is no events backend.
+- Event banners are recreated from the CampusCode mark and CSS; exact banner assets were not provided. Unimplemented sidebar destinations are displayed without links.
+- Production build passed. Browser preview could not connect to localhost in this environment, so the visual layout and interactions still need a browser check.
+
+### Functionality audit
+
+- Login accepts a username and any nonempty password, stores the exact username locally, and shows it on the dashboard. Registration accepts arbitrary entered details without checking password confirmation.
+- Fixed production logo loading and direct navigation to landing-page anchors after lazy loading. Connected every dashboard sidebar item to a route; unimplemented features show an honest empty or unavailable state.
+- Fixed the featured-event details link and a narrow-screen event header overflow. Event state remains a local frontend demo.
+- Verified registration with mismatched passwords, login, sign-out, dashboard name, reload, sidebar routes, Explore anchor, event registration/filter/search/details, video playback, an About flip card, and a 390px events viewport. No browser errors or warnings were observed during those checks. Production build passed.
+- Google/GitHub sign-in, actual event registration, hosting/team data, project management, notifications, and settings require implementation or backend services. Hosting support for direct SPA refresh depends on deployment configuration.

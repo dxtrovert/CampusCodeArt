@@ -20,7 +20,7 @@ export const processSteps = [
 ];
 
 export const challenges = [
-  { category: 'ARTIFICIAL INTELLIGENCE', title: 'AI for good', description: 'Build useful, thoughtful solutions for problems that matter.', status: 'OPEN' },
+  { category: 'ARTIFICIAL INTELLIGENCE', title: 'AI innovation', description: 'Build intelligent solutions for problems that matter.', status: 'OPEN' },
   { category: 'WEB DEVELOPMENT', title: 'Future web', description: 'Design and ship a fresh take on a digital experience.', status: 'LIVE' },
-  { category: 'CAMPUS INNOVATION', title: 'Better campus', description: 'Make everyday student life work a little better.', status: 'SOON' },
+  { category: 'SMART TECHNOLOGY', title: 'Campus tech', description: 'Create technology that makes student life better.', status: 'SOON' },
 ];

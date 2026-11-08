@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
   const value = useMemo(() => ({
     user,
     signIn: (profile) => setUser(profile),
+    updateProfile: (changes) => setUser((current) => ({ ...(current || {}), ...changes })),
     signOut: () => setUser(null),
   }), [setUser, user]);
 

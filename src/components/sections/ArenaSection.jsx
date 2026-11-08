@@ -2,6 +2,11 @@ import { ArrowUpRight } from 'lucide-react';
 import Reveal from '../common/Reveal.jsx';
 import SectionLabel from '../common/SectionLabel.jsx';
 import { challenges } from '../../data/landingContent.js';
+import aiImage from '../../assets/ai.png';
+import futureWebImage from '../../assets/futureweb.png';
+import campusTechImage from '../../assets/campustech.png';
+
+const challengeImages = [aiImage, futureWebImage, campusTechImage];
 
 export default function ArenaSection() {
   return (
@@ -9,8 +14,7 @@ export default function ArenaSection() {
       <SectionLabel number="04">CHALLENGES</SectionLabel>
       <div className="section-heading-row">
         <Reveal>
-          <p className="eyebrow">A good excuse to make something</p>
-          <h2>Enter the <span className="highlight highlight--lime">arena.</span></h2>
+          <h2>Enter the <span className="highlight highlight--lime">Arena.</span></h2>
         </Reveal>
         <a className="button button--light-outline" href="#process">
           <span>How to play</span><ArrowUpRight size={18} />
@@ -20,9 +24,8 @@ export default function ArenaSection() {
         {challenges.map((challenge, index) => (
           <Reveal key={challenge.title} delay={index * 0.08}>
             <article className={`challenge-card challenge-card--${index + 1}`}>
-              <div className="challenge-art" aria-hidden="true">
-                <span className="challenge-art__orb" />
-                <span className="challenge-art__ring" />
+              <div className="challenge-art">
+                <img className="challenge-art__image" src={challengeImages[index]} alt="" loading="lazy" />
                 <span className="challenge-art__number">0{index + 1}</span>
                 <span className="challenge-art__status">{challenge.status}</span>
               </div>

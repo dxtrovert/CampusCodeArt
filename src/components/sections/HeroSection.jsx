@@ -130,7 +130,6 @@ export default function HeroSection() {
           initial={reduceMotion ? false : 'hidden'}
           animate={reduceMotion ? undefined : 'visible'}
         >
-          <p className="eyebrow"><span className="status-dot" /> The student innovation network</p>
           <motion.h1 aria-label="Build. Compete. Ship.">
             <motion.span variants={lineVariants}>Build.</motion.span>
             <motion.span variants={lineVariants}>Compete.</motion.span>
@@ -192,7 +191,6 @@ export default function HeroSection() {
 
       <div className="hero-panels">
         <article className="hero-panel hero-panel--discover">
-          <span className="mono-label">01 / DISCOVER</span>
           <ArrowUpRight className="hero-panel__arrow" size={22} />
           <h2>Find ideas, people<br />and opportunities<br />across your campus.</h2>
           <p>Meet builders and make your next campus idea real.</p>
@@ -202,7 +200,6 @@ export default function HeroSection() {
         </article>
 
         <article className="hero-panel hero-panel--build">
-          <span className="mono-label">02 / BUILD</span>
           <ArrowUpRight className="hero-panel__arrow" size={22} />
           <h2>Ideas<br /><span>into <em>Impact.</em></span></h2>
         </article>

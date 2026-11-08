@@ -88,8 +88,8 @@ export default function SiteHeader() {
 
         <div className="site-header__actions">
           <Link className="header-login" to="/login">Log in</Link>
-          <Link className="header-cta" to="/register">
-            Get started <ArrowUpRight size={17} aria-hidden="true" />
+          <Link className="header-cta" to="/dashboard">
+            Open CampusCode <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
           <button
             className="menu-toggle"
